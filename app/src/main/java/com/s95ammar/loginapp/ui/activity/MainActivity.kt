@@ -16,10 +16,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (supportFragmentManager.fragments.isEmpty())
-            addLoginFragment()
+            navigateToLoginFragment()
+
+        sharedViewModel.login.observe(this) { login ->
+            if (login == null) navigateToLoginFragment()
+        }
     }
 
-    private fun addLoginFragment() {
+    private fun navigateToLoginFragment() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, LoginFragment())
             .commit()

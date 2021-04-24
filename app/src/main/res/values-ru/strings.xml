@@ -5,5 +5,6 @@
     <string name="log_in">Войти</string>
     <string name="format_welcome">Привет, %s!</string>
     <string name="error_login_incorrect_credentials">Неправильный логин или пароль</string>
+    <string name="log_out">Выйти</string>
 
 </resources>

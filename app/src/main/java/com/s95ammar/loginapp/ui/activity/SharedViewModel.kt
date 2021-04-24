@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 
 class SharedViewModel : ViewModel() {
 
-    private val _login = MutableLiveData<String>()
+    private val _login = MutableLiveData<String?>()
 
-    val login: LiveData<String> = _login
+    val login: LiveData<String?> = _login
 
-    fun setLogin(login: String) {
+    fun setLogin(login: String?) {
         _login.value = login
         Log.d("SharedViewModel", this.login.value.toString())
     }

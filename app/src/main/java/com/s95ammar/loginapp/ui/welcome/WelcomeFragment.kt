@@ -4,12 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.s95ammar.loginapp.R
 import com.s95ammar.loginapp.ui.activity.SharedViewModel
+import com.s95ammar.loginapp.ui.welcome.common.WelcomeUiEvent
+import com.s95ammar.loginapp.util.Event
 
 class WelcomeFragment : Fragment() {
 
@@ -35,11 +41,19 @@ class WelcomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val welcomeTextView = view.findViewById<TextView>(R.id.welcome_text_view)
+        val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
         sharedViewModel.login.observe(viewLifecycleOwner) { login ->
             welcomeTextView.text = getString(R.string.format_welcome, login)
         }
 
+        viewModel.uiEvent.observe(viewLifecycleOwner) { event ->
+            handleEvent(event)
+        }
+
+        logoutButton.setOnClickListener {
+            viewModel.onLogout()
+        }
 /*
         val imageView = view.findViewById<ImageView>(R.id.login_image_view)
         imageView.setImageResource(R.drawable.ic_key)
@@ -49,5 +63,22 @@ class WelcomeFragment : Fragment() {
       val login = arguments?.getString(WelcomeScreenKeys.KEY_LOGIN).orEmpty()
         welcomeTextView.text = "Welcome $login (by arguments)"
 */
+    }
+
+    private fun handleEvent(event: Event<WelcomeUiEvent>) {
+        event.getIfNotHandled()?.let { welcomeEvent ->
+            when (welcomeEvent) {
+                is WelcomeUiEvent.Loading -> {
+                    val logoutButton = view?.findViewById<Button>(R.id.logout_button)
+                    val progressBar = view?.findViewById<ProgressBar>(R.id.welcome_loading_progress_bar)
+
+                    logoutButton?.isInvisible = welcomeEvent.isLoading
+                    progressBar?.isVisible = welcomeEvent.isLoading
+                }
+                is WelcomeUiEvent.Logout -> {
+                    sharedViewModel.setLogin(null)
+                }
+            }
+        }
     }
 }

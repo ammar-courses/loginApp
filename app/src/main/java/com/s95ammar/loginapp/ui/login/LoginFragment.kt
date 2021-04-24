@@ -73,7 +73,7 @@ class LoginFragment : Fragment() {
         event.getIfNotHandled()?.let { loginEvent ->
             when (loginEvent) {
                 is LoginUiEvent.Loading -> {
-                    val progressBar = view?.findViewById<ProgressBar>(R.id.loading_progress_bar)
+                    val progressBar = view?.findViewById<ProgressBar>(R.id.login_loading_progress_bar)
                     val loginButton = view?.findViewById<Button>(R.id.login_button)
 
                     progressBar?.isVisible = loginEvent.isLoading
