@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.s95ammar.loginapp.R
+import com.s95ammar.loginapp.databinding.FragmentWelcomeBinding
 import com.s95ammar.loginapp.ui.activity.SharedViewModel
 import com.s95ammar.loginapp.ui.welcome.common.WelcomeUiEvent
 import com.s95ammar.loginapp.util.observeEvent
@@ -31,27 +29,30 @@ class WelcomeFragment : Fragment() {
     private val viewModel: WelcomeViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
+    private var _binding: FragmentWelcomeBinding? = null
+    private val binding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_welcome, container, false)
+    ): View {
+        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val welcomeTextView = view.findViewById<TextView>(R.id.welcome_text_view)
-        val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
         sharedViewModel.login.observe(viewLifecycleOwner) { login ->
-            welcomeTextView.text = getString(R.string.format_welcome, login)
+            binding.welcomeTextView.text = getString(R.string.format_welcome, login)
         }
 
         viewModel.uiEvent.observeEvent(viewLifecycleOwner) { event ->
             handleEvent(event)
         }
 
-        logoutButton.setOnClickListener {
+        binding.logoutButton.setOnClickListener {
             viewModel.onLogout()
         }
 /*
@@ -68,15 +69,17 @@ class WelcomeFragment : Fragment() {
     private fun handleEvent(welcomeEvent: WelcomeUiEvent) {
         when (welcomeEvent) {
             is WelcomeUiEvent.Loading -> {
-                val logoutButton = view?.findViewById<Button>(R.id.logout_button)
-                val progressBar = view?.findViewById<ProgressBar>(R.id.welcome_loading_progress_bar)
-
-                logoutButton?.isInvisible = welcomeEvent.isLoading
-                progressBar?.isVisible = welcomeEvent.isLoading
+                binding.logoutButton.isInvisible = welcomeEvent.isLoading
+                binding.welcomeLoadingProgressBar.isVisible = welcomeEvent.isLoading
             }
             is WelcomeUiEvent.Logout -> {
                 sharedViewModel.setLogin(null)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

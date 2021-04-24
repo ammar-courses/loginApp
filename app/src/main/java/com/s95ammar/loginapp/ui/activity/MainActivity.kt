@@ -3,7 +3,7 @@ package com.s95ammar.loginapp.ui.activity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.s95ammar.loginapp.R
+import com.s95ammar.loginapp.databinding.ActivityMainBinding
 import com.s95ammar.loginapp.ui.login.LoginFragment
 
 class MainActivity : AppCompatActivity() {
@@ -11,9 +11,12 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by viewModels()
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (supportFragmentManager.fragments.isEmpty())
             navigateToLoginFragment()
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToLoginFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, LoginFragment())
+            .replace(binding.container.id, LoginFragment())
             .commit()
     }
 
