@@ -15,7 +15,7 @@ import androidx.fragment.app.viewModels
 import com.s95ammar.loginapp.R
 import com.s95ammar.loginapp.ui.activity.SharedViewModel
 import com.s95ammar.loginapp.ui.welcome.common.WelcomeUiEvent
-import com.s95ammar.loginapp.util.Event
+import com.s95ammar.loginapp.util.observeEvent
 
 class WelcomeFragment : Fragment() {
 
@@ -47,7 +47,7 @@ class WelcomeFragment : Fragment() {
             welcomeTextView.text = getString(R.string.format_welcome, login)
         }
 
-        viewModel.uiEvent.observe(viewLifecycleOwner) { event ->
+        viewModel.uiEvent.observeEvent(viewLifecycleOwner) { event ->
             handleEvent(event)
         }
 
@@ -65,19 +65,17 @@ class WelcomeFragment : Fragment() {
 */
     }
 
-    private fun handleEvent(event: Event<WelcomeUiEvent>) {
-        event.getIfNotHandled()?.let { welcomeEvent ->
-            when (welcomeEvent) {
-                is WelcomeUiEvent.Loading -> {
-                    val logoutButton = view?.findViewById<Button>(R.id.logout_button)
-                    val progressBar = view?.findViewById<ProgressBar>(R.id.welcome_loading_progress_bar)
+    private fun handleEvent(welcomeEvent: WelcomeUiEvent) {
+        when (welcomeEvent) {
+            is WelcomeUiEvent.Loading -> {
+                val logoutButton = view?.findViewById<Button>(R.id.logout_button)
+                val progressBar = view?.findViewById<ProgressBar>(R.id.welcome_loading_progress_bar)
 
-                    logoutButton?.isInvisible = welcomeEvent.isLoading
-                    progressBar?.isVisible = welcomeEvent.isLoading
-                }
-                is WelcomeUiEvent.Logout -> {
-                    sharedViewModel.setLogin(null)
-                }
+                logoutButton?.isInvisible = welcomeEvent.isLoading
+                progressBar?.isVisible = welcomeEvent.isLoading
+            }
+            is WelcomeUiEvent.Logout -> {
+                sharedViewModel.setLogin(null)
             }
         }
     }

@@ -6,26 +6,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s95ammar.loginapp.R
 import com.s95ammar.loginapp.ui.login.common.LoginUiEvent
-import com.s95ammar.loginapp.util.Event
+import com.s95ammar.loginapp.util.EventLiveData
+import com.s95ammar.loginapp.util.EventMutableLiveData
+import com.s95ammar.loginapp.util.call
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
     private val _login = MutableLiveData<String>()
-//    private val _loginErrorEvent = MutableLiveData<Event<Int>>()
-//    private val _loadingEvent = MutableLiveData<Event<Boolean>>()
-    private val _uiEvent = MutableLiveData<Event<LoginUiEvent>>()
+    private val _uiEvent = EventMutableLiveData<LoginUiEvent>()
 
     val login: LiveData<String> = _login
-//    val loginErrorEvent: LiveData<Event<Int>> = _loginErrorEvent
-//    val loadingEvent: LiveData<Event<Boolean>> = _loadingEvent
-    val uiEvent: LiveData<Event<LoginUiEvent>> = _uiEvent
+    val uiEvent: EventLiveData<LoginUiEvent> = _uiEvent
 
     fun onLogin(login: String, password: String) {
         // launches a coroutine in the ViewModel and prevents possible leaks from the coroutine
         viewModelScope.launch {
-            _uiEvent.value = Event(LoginUiEvent.Loading(true))
+            _uiEvent.call(LoginUiEvent.Loading(true))
 
             // Fake work to see the loading
             delay(2000) // can only be called inside a coroutine
@@ -33,9 +31,9 @@ class LoginViewModel : ViewModel() {
             if (login == "Vlad" && password == "123456") {
                 _login.value = login
             } else {
-                _uiEvent.value = Event(LoginUiEvent.LoginError(R.string.error_login_incorrect_credentials))
+                _uiEvent.call(LoginUiEvent.LoginError(R.string.error_login_incorrect_credentials))
             }
-            _uiEvent.value = Event(LoginUiEvent.Loading(false))
+            _uiEvent.call(LoginUiEvent.Loading(false))
 
         }
 

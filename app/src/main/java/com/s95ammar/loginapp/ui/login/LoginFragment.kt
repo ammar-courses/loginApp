@@ -17,7 +17,7 @@ import com.s95ammar.loginapp.R
 import com.s95ammar.loginapp.ui.activity.SharedViewModel
 import com.s95ammar.loginapp.ui.login.common.LoginUiEvent
 import com.s95ammar.loginapp.ui.welcome.WelcomeFragment
-import com.s95ammar.loginapp.util.Event
+import com.s95ammar.loginapp.util.observeEvent
 
 class LoginFragment : Fragment() {
 
@@ -50,7 +50,7 @@ class LoginFragment : Fragment() {
 //            navigateToWelcomeFragment(login) // solution with arguments
         }
 
-        viewModel.uiEvent.observe(viewLifecycleOwner) { event ->
+        viewModel.uiEvent.observeEvent(viewLifecycleOwner) { event ->
             handleEvent(event)
         }
 /*
@@ -69,19 +69,17 @@ class LoginFragment : Fragment() {
 */
     }
 
-    private fun handleEvent(event: Event<LoginUiEvent>) {
-        event.getIfNotHandled()?.let { loginEvent ->
-            when (loginEvent) {
-                is LoginUiEvent.Loading -> {
-                    val progressBar = view?.findViewById<ProgressBar>(R.id.login_loading_progress_bar)
-                    val loginButton = view?.findViewById<Button>(R.id.login_button)
+    private fun handleEvent(loginEvent: LoginUiEvent) {
+        when (loginEvent) {
+            is LoginUiEvent.Loading -> {
+                val progressBar = view?.findViewById<ProgressBar>(R.id.login_loading_progress_bar)
+                val loginButton = view?.findViewById<Button>(R.id.login_button)
 
-                    progressBar?.isVisible = loginEvent.isLoading
-                    loginButton?.isGone = loginEvent.isLoading
-                }
-                is LoginUiEvent.LoginError -> {
-                    Toast.makeText(requireContext(), loginEvent.errorStringId, Toast.LENGTH_LONG).show()
-                }
+                progressBar?.isVisible = loginEvent.isLoading
+                loginButton?.isGone = loginEvent.isLoading
+            }
+            is LoginUiEvent.LoginError -> {
+                Toast.makeText(requireContext(), loginEvent.errorStringId, Toast.LENGTH_LONG).show()
             }
         }
     }
