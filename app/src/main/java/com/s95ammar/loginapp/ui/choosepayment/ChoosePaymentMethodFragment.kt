@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.loginapp.R
+import com.s95ammar.loginapp.ui.choosepayment.adapter.ChoosePaymentMethodAdapter
 
 class ChoosePaymentMethodFragment : Fragment() {
 
@@ -28,7 +29,13 @@ class ChoosePaymentMethodFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-//        recyclerView.adapter =
+        val adapter = ChoosePaymentMethodAdapter()
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.paymentMethods.observe(viewLifecycleOwner) { paymentMethods ->
+            adapter.list = paymentMethods
+            adapter.notifyDataSetChanged()
+        }
     }
 }

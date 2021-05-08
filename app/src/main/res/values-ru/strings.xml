@@ -7,5 +7,10 @@
     <string name="error_login_incorrect_credentials">Неправильный логин или пароль</string>
     <string name="log_out">Выйти</string>
     <string name="choose_payment_method">Выбрать способ оплаты</string>
+    <string name="cash">Cash<!--TODO: translate--></string>
+    <string name="credit_card">Credit card<!--TODO: translate--></string>
+    <string name="google_pay">Google pay<!--TODO: translate--></string>
+    <string name="bank_transfer">Bank transfer<!--TODO: translate--></string>
+    <string name="crypto_currency">Crypto currency<!--TODO: translate--></string>
 
 </resources>

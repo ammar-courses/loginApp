@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import com.s95ammar.loginapp.R
 import com.s95ammar.loginapp.databinding.FragmentWelcomeBinding
 import com.s95ammar.loginapp.ui.activity.SharedViewModel
+import com.s95ammar.loginapp.ui.choosepayment.ChoosePaymentMethodFragment
 import com.s95ammar.loginapp.ui.welcome.common.WelcomeUiEvent
 import com.s95ammar.loginapp.util.observeEvent
 
@@ -54,6 +55,13 @@ class WelcomeFragment : Fragment() {
 
         binding.logoutButton.setOnClickListener {
             viewModel.onLogout()
+        }
+
+        binding.paymentMethodButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, ChoosePaymentMethodFragment.newInstance())
+                .addToBackStack(null)
+                .commit()
         }
 /*
         val imageView = view.findViewById<ImageView>(R.id.login_image_view)
